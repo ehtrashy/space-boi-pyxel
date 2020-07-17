@@ -1,17 +1,19 @@
 #### made by ehtrashypanda with pyxel
 #### currently suffering from two issues / missing features
 ##1. collsion detection
-##2. out of bounds
+##2. out of bounds //// DONE
 ## feel free to use this as a refrence for any projects!
 import pyxel
 import random
 GRAV = 100  
+SCREEN_WIDTH = 160
+SCREEN_HEIGHT = 120
 
 
 
 class App:
     def __init__(self):
-        pyxel.init(160, 120)
+        pyxel.init(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.x = 80
         self.y = 60
         pyxel.playm(0, loop=True)
@@ -50,6 +52,12 @@ class App:
             self.x = self.x - 2
             self.y = self.y - self.boosty
             self.fuel = self.fuel - self.minusfuel
+
+##      Out of Bounds collision
+        print(self.is_out_of_bounds())
+        if self.is_out_of_bounds():
+            # Place what you want when it goes out of bounds here
+            print('Game Over !')
 ## this was used to test boost
 ##        if pyxel.btn(pyxel.KEY_SPACE):
 ##            self.fuel += 10
@@ -75,6 +83,27 @@ class App:
 ##            self.fuel += 30
 ##            self.fuelx = random.randrange(0,160)
 ##            self.fuely = random.randrange(10,120)
+
+    def is_out_of_bounds(self):
+        ## Will check if the player go out of bounds at a certain border and if so it returns true
+        # "self.x + 4" is the left side of the player, "self.x + 11" is the right side of the player, "self.y + 4" is the top side of the player, "self.y + 14" is the bottom side of the player
+        # TODO:you will need to take into account the correct border of your character in the future
+        
+        #Left Corner collision
+        if self.x + 11 < 0:
+            return True
+        #Right Corner collision
+        elif self.x + 4 > SCREEN_WIDTH:
+            return True
+        #Top Corner collision
+        elif self.y + 14 < 10:
+            return True
+        #Bottom Corner collision
+        elif self.y + 4 > SCREEN_HEIGHT:
+            return True
+        else:
+            return False
+            
     def check_fuel(self):
          if str(self.x) == str(self.fuelx) or str(self.y) == str(self.fuely):
             self.score += 100
@@ -105,6 +134,7 @@ class App:
             player = pyxel.blt(self.x - 1,self.y,0,16,0,16,16,pyxel.COLOR_WHITE)
             self.score += 10
 ##      print the score, position, and fuel, clearing the screen stops overwriting
+        pyxel.rect(0,0,SCREEN_WIDTH,10, pyxel.COLOR_BLACK)
         s = "SCORE:{:04}".format(self.score)
         pyxel.text(0, 0, s, 6)
         f = "FUEL:{:02}".format(self.fuel)
